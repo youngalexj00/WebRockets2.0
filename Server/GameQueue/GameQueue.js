@@ -4,14 +4,16 @@ class GameQueue {
   constructor() {
     this.queue = [];
   }
-  queue(userID, res) {
+  queueUser(userID, res) {
     this.queue.push({ userID, res });
+    console.log('queue is ', this.queue.length)
     if (this.queue.length < 2) return;
     const user1 = this.queue.shift();
     const user2 = this.queue.shift();
     GameController.createGame(user1, user2);
   }
-  dequeue(userID) {
+  dequeueUser(userID) {
+    console.log('call to dequeue')
     for (let i = 0; i < this.queue.length; i++) {
       if (this.queue[i].userID === userID) {
         if (i === 0) this.queue.shift();
@@ -23,4 +25,4 @@ class GameQueue {
   }
 }
 
-module.export = GameQueue;
+module.exports = GameQueue;

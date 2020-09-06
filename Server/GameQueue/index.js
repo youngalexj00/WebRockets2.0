@@ -1,4 +1,4 @@
-const GameQueue = require('./GameQueue');
+const GameQueue = require('./GameQueue.js');
 
 const GameQueueInstance = new GameQueue();
 

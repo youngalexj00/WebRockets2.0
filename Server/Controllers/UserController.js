@@ -23,7 +23,7 @@ UserController.createUser = async (req, res, next) => {
   }
 
   // create user
-  let createUserQuery = await database.query('INSERT INTO users (username, password) VALUES ($1, $2)', [req.body.username, req.body.password])
+  let createUserQuery = await database.query('INSERT INTO users (username, password, wins, losses) VALUES ($1, $2, $3)', [req.body.username, req.body.password, 0, 0])
     .catch(error => {
       return next({
         message: 'creating user',

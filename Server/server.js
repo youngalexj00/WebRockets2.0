@@ -2,24 +2,25 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
+const GameRouter = require('./Routers/GameRouter.js');
+const UserRouter = require('./Routers/UserRouter.js');
+
 const UserController = require('./Controllers/UserController.js');
 const BoardController = require('./Controllers/GameController.js');
 
+// static assets and build
 app.use(express.json());
+app.get('/', (req, res) => res.send('hi there'));
+app.get('/build', (req, res) => res.sendFile(path.resolve(__dirname, './Build/bundle.js')));
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, './StaticAssets/index.html')));
 
-app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './StaticAssets/index.html')));
+app.use('/game', GameRouter);
+app.use('/user', UserRouter);
 
-app.get('/build', express.static('./Build'));
-
-app.post('/createUser', UserController.createUser, (req, res) => {
-  res.sendStatus(200);
+app.use((req, res) => {
+  console.log('404 error');
+  res.sendStatus(404);
 })
-
-app.post('/login', UserController.login, (req, res) => {
-  res.sendStatus(200);
-});
-
-app.use((req, res) => res.send('hi theredsafsdf!'));
 
 app.use((incomingError, req, res, next) => {
   const defaultError = {
@@ -29,6 +30,6 @@ app.use((incomingError, req, res, next) => {
   }
   const error = Object.assign(defaultError, incomingError);
   res.status(error.status).json({ " error ": error.message });
-})
+});
 
 app.listen(3000, () => console.log('server listening on port 3000'));

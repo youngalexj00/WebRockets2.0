@@ -23,7 +23,6 @@ GameController.updateBoard = (req, res, next) => {
 GameController.createGame = (user1, user2) => {
   let board = [];
   for (let i = 0; i < 9; i++) board.push('');
-
   database.query('INSERT INTO games (user1, user2, status, board) VALUES ($1, $2, $3, $4)', [user1.userID, user2.userID, 'active', board])
     .then(() => {
       user1.res.send('game has started');

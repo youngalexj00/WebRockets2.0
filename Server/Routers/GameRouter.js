@@ -4,10 +4,13 @@ const GameController = require('../Controllers/GameController.js');
 const GameQueue = require('../GameQueue/index.js');
 
 router.post('/queueGame', (req, res) => {
-  GameQueue.queue(req.body.userID, res);
+  console.log('call to queue game')
+  GameQueue.queueUser(req.body.userID, res);
 })
+
 router.post('/dequeueGame', (req, res) => {
-  GameQueue.dequeue(req.body.userID, res);
+  GameQueue.dequeueUser(req.body.userID);
+  res.sendStatus(200);
 });
 
 module.exports = router;
