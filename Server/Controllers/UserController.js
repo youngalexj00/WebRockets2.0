@@ -3,8 +3,6 @@ const database = require('../Database/database.js');
 const UserController = {};
 
 UserController.createUser = async (req, res, next) => {
-  console.log('call to createUser');
-
   // make sure user name is not already taken
   let usernameQuery = await database.query('SELECT username FROM users where username = $1', [req.body.username])
     .catch(error => {
@@ -21,8 +19,8 @@ UserController.createUser = async (req, res, next) => {
 
   // create user
   let createUserQuery = await database.query(
-    'INSERT INTO users (username, password, wins, losses, games) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-    [req.body.username, req.body.password, 0, 0, []]
+    'INSERT INTO users (username, password, wins, losses) VALUES ($1, $2, $3, $4) RETURNING id',
+    [req.body.username, req.body.password, 0, 0]
   ).then((response) => {
     res.locals.user = response.rows[0];
     return next();
@@ -36,7 +34,7 @@ UserController.createUser = async (req, res, next) => {
 }
 
 UserController.getUser = (req, res, next) => {
-  database.query('SELECT username, password, wins, losses, games FROM users WHERE id = $1', [req.body.id])
+  database.query('SELECT username, password, wins, losses FROM users WHERE id = $1', [req.body.id])
     .then((response) => {
       if (response.rows.length === 0) {
         res.locals.error = 'user does not exist';

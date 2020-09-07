@@ -4,7 +4,6 @@ const GameController = require('../Controllers/GameController.js');
 const UserController = require('../Controllers/UserController.js');
 
 router.post('/createUser', UserController.createUser, (req, res) => {
-  console.log('call to create user')
   res.json({ data: res.locals });
 });
 

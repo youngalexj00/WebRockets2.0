@@ -34,6 +34,7 @@ app.use((incomingError, req, res, next) => {
     error: null
   }
   const error = Object.assign(defaultError, incomingError);
+  console.log('error ', error)
   res.status(error.status).json({ " error ": error.message });
 });
 
