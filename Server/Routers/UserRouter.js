@@ -11,6 +11,10 @@ router.post('/getUser', UserController.getUser, (req, res) => {
   res.json({ data: res.locals })
 })
 
+router.post('/updateUser', UserController.getUser, UserController.updateUser, (req, res) => {
+  res.json({ data: res.locals })
+})
+
 router.post('/login', UserController.login, (req, res) => {
   res.send(200);
 });

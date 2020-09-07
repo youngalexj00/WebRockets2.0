@@ -51,6 +51,21 @@ UserController.getUser = (req, res, next) => {
     });
 }
 
+UserController.updateUser = (req, res, next) => {
+  console.log('req body is ', req.body)
+  Object.assign(res.locals.user, req.body);
+  database.query('UPDATE users SET username = $1, password = $2, wins = $3, losses = $4 WHERE id = $5',
+    [res.locals.user.username, res.locals.user.password, res.locals.user.wins, res.locals.user.losses, req.body.id])
+    .then(() => next())
+    .catch(error => {
+      return next({
+        message: 'error updating user information',
+        status: 400,
+        error: error
+      })
+    });
+}
+
 UserController.login = (req, res, next) => {
   database.query('SELECT userid FROM users WHERE username = $1 AND password = $2', [req.body.username, req.body.password])
     .then((response) => {

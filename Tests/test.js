@@ -64,9 +64,33 @@ describe('Tests', () => {
     })
 
     it('/user/updateUser POST', async () => {
-      // updateUserResonse = await axios.post(server + '/user/updateUser', {
-      //   id: 
-      // })
+      const newUser = await axios.post(server + '/user/createUser', {
+        username: 'username3',
+        password: 'password3'
+      }).then(res => res.data)
+        .catch(error => {
+          throw new Error(error)
+        });
+      const updateUserResponse = await axios.post(server + '/user/updateUser', {
+        id: newUser.data.user.id,
+        username: 'username4',
+        password: 'password4',
+        wins: 1,
+        losses: 1
+      }).then(res => res.data)
+        .catch(error => {
+          throw new Error(error)
+        });
+      let result = await database.query('SELECT * FROM users WHERE id = $1', [newUser.data.user.id])
+        .then((res) => res.rows[0])
+        .catch(error => {
+          throw new Error(error)
+        });
+      assert.equal(result.id, newUser.data.user.id);
+      assert.equal(result.username, 'username4');
+      assert.equal(result.password, 'password4');
+      assert.equal(result.wins, 1);
+      assert.equal(result.losses, 1);
     })
 
     it('should validate users with correct username and password', () => {
