@@ -15,24 +15,42 @@ UserController.createUser = async (req, res, next) => {
       })
     });
   if (usernameQuery.rows.length > 0) {
-    return next({
-      message: 'username already exists',
-      status: 400,
-      error: null
-    })
+    res.locals.error = 'username is taken';
+    return next();
   }
 
   // create user
-  let createUserQuery = await database.query('INSERT INTO users (username, password, wins, losses) VALUES ($1, $2, $3)', [req.body.username, req.body.password, 0, 0])
-    .catch(error => {
+  let createUserQuery = await database.query(
+    'INSERT INTO users (username, password, wins, losses, games) VALUES ($1, $2, $3, $4, $5) RETURNING id',
+    [req.body.username, req.body.password, 0, 0, []]
+  ).then((response) => {
+    res.locals.user = response.rows[0];
+    return next();
+  }).catch(error => {
+    return next({
+      message: 'creating user',
+      status: 400,
+      error: error
+    })
+  });
+}
+
+UserController.getUser = (req, res, next) => {
+  database.query('SELECT username, password, wins, losses, games FROM users WHERE id = $1', [req.body.id])
+    .then((response) => {
+      if (response.rows.length === 0) {
+        res.locals.error = 'user does not exist';
+        return next();
+      }
+      res.locals.user = response.rows[0];
+      return next();
+    }).catch(error => {
       return next({
-        message: 'creating user',
+        message: 'error getting user info from DB',
         status: 400,
         error: error
       })
     });
-
-  next();
 }
 
 UserController.login = (req, res, next) => {
@@ -46,8 +64,7 @@ UserController.login = (req, res, next) => {
         })
       }
       next();
-    })
-    .catch(error => {
+    }).catch(error => {
       return next({
         message: 'logging in',
         status: 400,

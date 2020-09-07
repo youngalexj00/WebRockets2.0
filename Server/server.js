@@ -10,15 +10,20 @@ const BoardController = require('./Controllers/GameController.js');
 
 // static assets and build
 app.use(express.json());
-app.get('/', (req, res) => res.send('hi there'));
+app.use((req, res, next) => {
+  res.locals = {};
+  next();
+});
 app.get('/build', (req, res) => res.sendFile(path.resolve(__dirname, './Build/bundle.js')));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, './StaticAssets/index.html')));
 
 app.use('/game', GameRouter);
 app.use('/user', UserRouter);
 
+
+// 404 error handler
 app.use((req, res) => {
-  console.log('404 error');
+  console.log('404 ERROR\nurl was ', req.url, '\nmethod was ', req.method, '\nbody was ', req.body);
   res.sendStatus(404);
 })
 

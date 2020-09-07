@@ -3,11 +3,16 @@ const router = express.Router();
 const GameController = require('../Controllers/GameController.js');
 const UserController = require('../Controllers/UserController.js');
 
-router.use('/createUser', UserController.createUser, (req, res) => {
-  res.send(200);
+router.post('/createUser', UserController.createUser, (req, res) => {
+  console.log('call to create user')
+  res.json({ data: res.locals });
 });
 
-router.use('/login', UserController.login, (req, res) => {
+router.post('/getUser', UserController.getUser, (req, res) => {
+  res.json({ data: res.locals })
+})
+
+router.post('/login', UserController.login, (req, res) => {
   res.send(200);
 });
 
